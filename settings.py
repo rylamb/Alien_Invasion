@@ -11,14 +11,9 @@ class Settings:
         # Ship settings
         self.ship_speed_factor = 1.5
 
-    def get_screen_width(self):
-        return self.screen_width
-
-    def get_screen_height(self):
-        return self.screen_height
-
-    def get_background_color(self):
-        return self.background_color
-
-    def get_ship_speed_factor(self):
-        return self.ship_speed_factor
+        # Bullet settings
+        self.bullet_speed_factor = 1
+        self.bullet_width = 3
+        self.bullet_height = 15
+        self.bullet_color = 240, 240, 240
+        self.bullets_allowed = 3
