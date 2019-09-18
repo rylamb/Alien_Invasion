@@ -10,6 +10,7 @@ from bullet import Bullet
 from alien import Alien
 from game_stats import GameStats
 from button import Button
+from scoreboard import Scoreboard
 
 
 class AlienInvasion:
@@ -27,6 +28,7 @@ class AlienInvasion:
         self.create_fleet()
         self.stats = GameStats(self.settings)
         self.play_button = Button(self.settings, self.screen, "Play")
+        self.sb = Scoreboard(self.settings, self.screen, self.stats)
 
     def run_game(self):
         """Control game loop for Alien Invasion"""
@@ -58,8 +60,13 @@ class AlienInvasion:
 
     def check_bullet_alien_collisions(self):
         collisions = pygame.sprite.groupcollide(self.aliens, self.bullets, True, True)
+        if collisions:
+            for aliens in collisions.values():
+                self.stats.score += self.settings.alien_points * len(aliens)
+                self.sb.prep_score()
         if len(self.aliens) == 0:
             self.bullets.empty()
+            self.settings.increase_speed()
             self.create_fleet()
 
     def check_events(self):
@@ -105,6 +112,7 @@ class AlienInvasion:
             bullet.draw_bullet()
         self.player_ship.blitme()
         self.aliens.draw(self.screen)
+        self.sb.show_score()
         if not self.stats.game_active:
             self.play_button.draw_button()
         pygame.display.flip()
@@ -178,6 +186,7 @@ class AlienInvasion:
         """Start new game when player clicks Play"""
         button_clicked = self.play_button.rect.collidepoint(mouse_x, mouse_y)
         if button_clicked and not self.stats.game_active:
+            self.settings.initialize_dynamic_settings()
             pygame.mouse.set_visible(False)
             self.stats.reset_stats()
             self.stats.game_active = True
