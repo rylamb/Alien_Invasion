@@ -64,9 +64,12 @@ class AlienInvasion:
             for aliens in collisions.values():
                 self.stats.score += self.settings.alien_points * len(aliens)
                 self.sb.prep_score()
+            self.check_high_score()
         if len(self.aliens) == 0:
             self.bullets.empty()
             self.settings.increase_speed()
+            self.stats.level += 1
+            self.sb.prep_level()
             self.create_fleet()
 
     def check_events(self):
@@ -190,10 +193,19 @@ class AlienInvasion:
             pygame.mouse.set_visible(False)
             self.stats.reset_stats()
             self.stats.game_active = True
+            self.sb.prep_high_score()
+            self.sb.prep_level()
+            self.sb.prep_score()
             self.aliens.empty()
             self.bullets.empty()
             self.create_fleet()
             self.player_ship.center_ship()
+
+    def check_high_score(self):
+        """Check to see if there's a new high score"""
+        if self.stats.score > self.stats.high_score:
+            self.stats.high_score = self.stats.score
+            self.sb.prep_high_score()
 
 
 if __name__ == "__main__":
